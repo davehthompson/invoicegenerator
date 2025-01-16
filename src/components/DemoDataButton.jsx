@@ -46,6 +46,13 @@ const DemoDataButton = ({
   const handleGenerateDemo = async (industryKey = null) => {
     try {
       const loadingToast = toast.loading('Generating demo data...', { id: 'demo-data' });
+
+      // Track demo data generation
+    gtag('event', 'generate_demo_data', {
+      'event_category': 'Demo Features',
+      'event_label': industryKey || 'Random Industry',
+      'industry_type': industryKey || 'random'
+    });
       
       console.log('Generating demo data for industry:', industryKey);
       const result = await generateFakeInvoice(industryKey);

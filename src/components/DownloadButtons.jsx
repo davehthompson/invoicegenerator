@@ -120,6 +120,13 @@ const DownloadButtons = ({ invoiceData, lineItems, setInvoiceData }) => {
         const pdfBlob = await generatePDF(invoiceData);
         if (!pdfBlob) throw new Error('Failed to generate PDF');
 
+        // Track single PDF download
+      gtag('event', 'invoice_download', {
+        'event_category': 'Downloads',
+        'event_label': 'Single PDF',
+        'invoice_number': invoiceData.invoiceNumber
+      });
+
         const url = URL.createObjectURL(pdfBlob);
         const link = document.createElement('a');
         link.href = url;
@@ -153,6 +160,12 @@ const DownloadButtons = ({ invoiceData, lineItems, setInvoiceData }) => {
           duration: Infinity
         }
       );
+
+      gtag('event', 'invoice_download', {
+        'event_category': 'Downloads',
+        'event_label': 'Annual Pack',
+        'invoice_number': invoiceData.invoiceNumber
+      });
       
       const zip = new JSZip();
       let successCount = 0;
