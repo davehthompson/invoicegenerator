@@ -244,7 +244,7 @@ const DownloadButtons = ({ invoiceData, lineItems, setInvoiceData }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-300 shadow-lg z-50">
+        <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-300 shadow-lg z-[100]">
           <button
             onClick={() => handleDownload('pdf')}
             className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"

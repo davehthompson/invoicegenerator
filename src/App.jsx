@@ -132,7 +132,7 @@ function App() {
       />
 
       {/* Context-specific controls header */}
-      <header className="bg-white border-b border-gray-200 sticky top-16 z-40">
+      <header className="bg-white border-b border-gray-200 sticky top-16 z-20">
         <div className="px-8 py-4 w-full">
           <div className="flex justify-end">
             <EffectControls 

@@ -105,7 +105,7 @@ const DemoDataButton = ({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-1 w-64 bg-white border border-gray-300 shadow-lg z-50">
+        <div className="absolute right-0 mt-1 w-64 bg-white border border-gray-300 shadow-lg" style={{ zIndex: 1000 }}>
           <div className="py-1">
             <button
               onClick={() => handleGenerateDemo()}
