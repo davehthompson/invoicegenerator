@@ -1,9 +1,10 @@
 // src/domains/purchaseOrder/components/POForm.jsx
 import React from 'react';
+import { formatCurrency } from '../../shared/utils/format';
 
 const POForm = ({ 
   poData, 
-  setPoData, 
+  setPOData, 
   lineItems, 
   addLineItem, 
   removeLineItem, 
@@ -12,7 +13,7 @@ const POForm = ({
   const handleInputChange = (e, section) => {
     const { name, value } = e.target;
     if (section) {
-      setPoData({
+      setPOData({
         ...poData,
         [section]: {
           ...poData[section],
@@ -20,11 +21,15 @@ const POForm = ({
         }
       });
     } else {
-      setPoData({
+      setPOData({
         ...poData,
         [name]: value
       });
     }
+  };
+
+  const calculateSubtotal = () => {
+    return lineItems.reduce((total, item) => total + (item.quantity * item.unitPrice), 0);
   };
 
   return (
@@ -44,6 +49,7 @@ const POForm = ({
               value={poData.poNumber}
               onChange={(e) => handleInputChange(e)}
               className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0"
+              placeholder="PO-0001"
             />
           </div>
           <div>
@@ -111,6 +117,7 @@ const POForm = ({
               value={poData.vendor.name}
               onChange={(e) => handleInputChange(e, 'vendor')}
               className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0"
+              placeholder="Enter vendor name"
             />
           </div>
           <div>
@@ -121,8 +128,9 @@ const POForm = ({
               name="address"
               value={poData.vendor.address}
               onChange={(e) => handleInputChange(e, 'vendor')}
-              rows="2"
+              rows="3"
               className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0"
+              placeholder="Enter vendor address"
             />
           </div>
           <div>
@@ -135,6 +143,7 @@ const POForm = ({
               value={poData.vendor.email}
               onChange={(e) => handleInputChange(e, 'vendor')}
               className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:border-blue-500 focus:ring-0"
+              placeholder="vendor@example.com"
             />
           </div>
         </div>
@@ -175,15 +184,17 @@ const POForm = ({
                 />
               </div>
               <div className="col-span-2 text-right text-gray-600">
-                ${(item.quantity * item.unitPrice).toFixed(2)}
+                ${formatCurrency(item.quantity * item.unitPrice)}
               </div>
               <div className="col-span-1 text-right">
-                <button
-                  onClick={() => removeLineItem(item.id)}
-                  className="text-sm text-gray-400 hover:text-red-500 transition-colors"
-                >
-                  Remove
-                </button>
+                {lineItems.length > 1 && (
+                  <button
+                    onClick={() => removeLineItem(item.id)}
+                    className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -196,13 +207,13 @@ const POForm = ({
           Add Line Item
         </button>
 
-        {/* Total Section */}
+        {/* Totals Section */}
         <div className="flex justify-end pt-4 border-t">
-          <div className="w-64 space-y-3">
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>Subtotal</span>
-              <span className="font-medium">
-                ${lineItems.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0).toFixed(2)}
+          <div className="w-64">
+            <div className="flex justify-between pt-4 border-t-2 border-gray-200">
+              <span className="text-lg font-semibold text-gray-800">Total</span>
+              <span className="text-lg font-semibold text-gray-800">
+                ${formatCurrency(calculateSubtotal())}
               </span>
             </div>
           </div>
