@@ -1,6 +1,6 @@
 // src/components/LineItems.jsx
 import React from 'react';
-import { formatCurrency } from '../shared/utils/format';
+import { formatCurrency } from '../../shared/utils/format';
 import { CURRENCIES } from '../utils/generateFakeData';
 
 const LineItems = ({ 

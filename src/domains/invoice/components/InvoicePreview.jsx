@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { formatCurrency } from '../shared/utils/format';
+import { formatCurrency } from '../../shared/utils/format';
 import { getCompanyLogoPath } from '../utils/logoUtils';
 import PaperEffects from './PaperEffects';
 import { CURRENCIES } from '../utils/generateFakeData';

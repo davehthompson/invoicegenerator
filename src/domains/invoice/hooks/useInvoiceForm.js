@@ -1,6 +1,6 @@
 // src/hooks/useInvoiceForm.js
 import { useState, useEffect } from "react";
-import { getStoredInvoice, storeInvoice } from "../shared/utils/storage";
+import { getStoredInvoice, storeInvoice } from "../../shared/utils/storage";
 
 export const useInvoiceForm = () => {
   // Get current date and default due date (30 days from now)
@@ -73,7 +73,7 @@ export const useInvoiceForm = () => {
       try {
         // Import logo mapping using Vite's dynamic import
         const logoMappingModule = await import(
-          "../assets/company-logos/logo-mapping.json"
+          "../../../assets/company-logos/logo-mapping.json"
         );
         const logoMapping = logoMappingModule.default;
 

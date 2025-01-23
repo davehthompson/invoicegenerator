@@ -3,7 +3,7 @@ import React from 'react';
 import LineItems from './LineItems';
 import LogoUpload from './LogoUpload';
 import RemittanceSection from './RemittanceSection';
-import { formatCurrency } from '../shared/utils/format';
+import { formatCurrency } from '../../shared/utils/format';
 import { CURRENCIES } from '../utils/generateFakeData';
 
 const InvoiceForm = ({

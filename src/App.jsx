@@ -1,12 +1,13 @@
 import React from 'react';
 import { Toaster } from 'react-hot-toast'
 import { useState, useEffect, useRef } from 'react';
-import InvoiceForm from './components/InvoiceForm.jsx';
-import InvoicePreview from './components/InvoicePreview.jsx';
-import { useInvoiceForm } from './hooks/useInvoiceForm.js';
-import DownloadButtons from './components/DownloadButtons.jsx'
-import DemoDataButton from './components/DemoDataButton'
-import PaperEffects, { EffectControls } from './components/PaperEffects';
+import Layout from './domains/shared/components/Layout';
+import InvoiceForm from './domains/invoice/components/InvoiceForm';
+import InvoicePreview from './domains/invoice/components/InvoicePreview';
+import { useInvoiceForm } from './domains/invoice/hooks/useInvoiceForm';
+import DownloadButtons from './domains/invoice/components/DownloadButtons'
+import DemoDataButton from './domains/invoice/components/DemoDataButton'
+import PaperEffects, { EffectControls } from './domains/invoice/components/PaperEffects';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -96,72 +97,53 @@ function App() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col w-full">
-      <Toaster 
-  position="top-center"
-  toastOptions={{
-    duration: 3000,
-    style: {
-      background: '#363636',
-      color: '#fff',
-      maxWidth: '500px',
-      textAlign: 'center',
-    },
-    success: {
-      duration: 3000,
-      iconTheme: {
-        primary: '#4ade80',
-        secondary: '#fff',
-      },
-    },
-    error: {
-      duration: 4000,
-      iconTheme: {
-        primary: '#ef4444',
-        secondary: '#fff',
-      },
-    },
-    loading: {
-      duration: Infinity,
-      iconTheme: {
-        primary: '#3b82f6',
-        secondary: '#fff',
-      },
-    },
-  }}
-/>
+  const TopBarActions = () => (
+    <>
+      <DemoDataButton 
+        setInvoiceData={setInvoiceData}
+        setLineItems={setLineItems}
+        setTaxSettings={setTaxSettings}
+        setLogo={setLogo}
+      />
+      <DownloadButtons 
+        invoiceData={invoiceData} 
+        lineItems={lineItems} 
+        setInvoiceData={setInvoiceData}
+      />
+    </>
+  );
 
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-  <div className="px-8 py-6 w-full">
-    <div className="flex justify-between items-center mb-4">
-      <h1 className="text-2xl font-bold text-gray-900">Invoice Generator</h1>
-      <div className="flex gap-4">
-        <DemoDataButton 
-          setInvoiceData={setInvoiceData}
-          setLineItems={setLineItems}
-          setTaxSettings={setTaxSettings}
-          setLogo={setLogo}
-        />
-        <DownloadButtons 
-          invoiceData={invoiceData} 
-          lineItems={lineItems} 
-          setInvoiceData={setInvoiceData}
-        />
-      </div>
-    </div>
-    <div className="flex justify-end">
-    <EffectControls 
+  const InvoiceContent = () => (
+    <div className="min-h-screen bg-gray-50 flex flex-col w-full h-full">
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+            maxWidth: '500px',
+            textAlign: 'center',
+          },
+          success: { /* ... */ },
+          error: { /* ... */ },
+          loading: { /* ... */ },
+        }}
+      />
+
+      {/* Context-specific controls header */}
+      <header className="bg-white border-b border-gray-200 sticky top-16 z-40">
+        <div className="px-8 py-4 w-full">
+          <div className="flex justify-end">
+            <EffectControls 
               activeEffects={activeEffects} 
               onChange={(newEffects) => {
-                console.log('Setting new effects:', newEffects);
                 setActiveEffects(newEffects);
               }} 
             />
-    </div>
-  </div>
-</header>
+          </div>
+        </div>
+      </header>
 
       {/* Main Content */}
       <div className="flex relative w-full h-[calc(100vh-5rem)]">
@@ -188,7 +170,7 @@ function App() {
           </div>
         </div>
 
-        {/* Resizer with Button */}
+        {/* Resizer */}
         <div
           ref={resizerRef}
           className="w-1 bg-gray-200 hover:bg-gray-300 relative group"
@@ -229,6 +211,14 @@ function App() {
         </div>
       </div>
     </div>
+  );
+
+  return (
+    <Layout
+      topBarActions={<TopBarActions />}
+    >
+      <InvoiceContent />
+    </Layout>
   );
 }
 
