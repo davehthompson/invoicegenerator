@@ -89,7 +89,7 @@ const DemoDataButton = ({
           e.stopPropagation();
           setIsOpen(!isOpen);
         }}
-        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:border-blue-500 transition-colors"
+        className="flex items-center gap-2 px-4 py-2 bg-[#E4F222] border border-[#E4F222] text-gray-800 hover:bg-[#cdd71f] hover:border-[#cdd71f] focus:outline-none focus:ring-2 focus:ring-[#E4F222] focus:ring-opacity-50 transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

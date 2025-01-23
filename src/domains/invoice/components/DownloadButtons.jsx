@@ -224,7 +224,7 @@ const DownloadButtons = ({ invoiceData, lineItems, setInvoiceData }) => {
           !isGenerating && setIsOpen(!isOpen);
         }}
         disabled={isGenerating}
-        className={`flex items-center gap-2 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 transition-colors ${
+        className={`flex items-center gap-2 px-4 py-2 bg-[#E4F222] border border-[#E4F222] text-gray-800 hover:bg-[#cdd71f] hover:border-[#cdd71f] focus:outline-none focus:ring-2 focus:ring-[#E4F222] focus:ring-opacity-50 transition-colors ${
           isGenerating ? 'opacity-75 cursor-not-allowed' : ''
         }`}
       >
