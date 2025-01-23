@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
+// src/domains/shared/components/Layout.jsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Menu, 
   X,
   FileText, 
-  ClipboardList, 
-  GitCompare,
-  Settings
+  ClipboardList,
 } from 'lucide-react';
+import { useTopBar } from '../context/TopBarContext';
 
-const Layout = ({ children, topBarActions }) => {
+const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeRoute, setActiveRoute] = useState('invoice-generator');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { actions } = useTopBar()
 
   const navigationItems = [
-    { id: 'invoice-generator', label: 'Invoice Generator', icon: FileText },
-    { id: 'purchase-orders', label: 'Purchase Orders', icon: ClipboardList },
-    { id: 'reconciliation', label: 'Document Matching', icon: GitCompare },
-    { id: 'settings', label: 'Settings', icon: Settings }
+    { id: 'invoice-generator', label: 'Invoice Generator', icon: FileText, path: '/invoice-generator' },
+    { id: 'po-generation', label: 'PO Generator', icon: ClipboardList, path: '/po-generation' },
   ];
+
+  const handleNavigate = (path) => {
+    console.log('Navigating to:', path);
+    navigate(path);
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -30,7 +39,7 @@ const Layout = ({ children, topBarActions }) => {
         <div className="flex h-full">
           <div className="flex flex-col w-64 bg-white border-r">
             <div className="flex items-center justify-between h-16 px-4 border-b">
-              <h2 className="text-xl font-semibold text-gray-800">DocFlow</h2>
+              <h2 className="text-xl font-semibold text-gray-800">Ramp Solutions Tools</h2>
               <button
                 onClick={() => setIsSidebarOpen(false)}
                 className="p-1 text-gray-500 hover:text-gray-700"
@@ -44,9 +53,9 @@ const Layout = ({ children, topBarActions }) => {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => setActiveRoute(item.id)}
+                    onClick={() => handleNavigate(item.path)}
                     className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
-                      activeRoute === item.id
+                      location.pathname === item.path
                         ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-700 hover:bg-gray-50'
                     }`}
@@ -75,9 +84,9 @@ const Layout = ({ children, topBarActions }) => {
               </button>
             )}
           </div>
-          {/* Actions slot */}
+          {/* Action buttons container */}
           <div className="flex items-center gap-4">
-            {topBarActions}
+            {actions}
           </div>
         </div>
 
