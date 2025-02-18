@@ -21,63 +21,80 @@ const FLIGHT_ROUTES = {
 
 const AIRLINE_CLASSES = {
     DELTA: {
-        ECONOMY: [
+        BASIC_ECONOMY: [
             'BASIC ECONOMY (E)',
+        ],
+        MAIN_CABIN: [
             'MAIN CABIN (M)',
-            'ECONOMY (K)',
-            'FLEXIBLE ECONOMY (Y)'
+            'MAIN CABIN (K)',
+            'MAIN CABIN (U)',
         ],
-        PREMIUM: [
+        ECONOMY_PLUS: [
             'COMFORT+ (W)',
-            'PREMIUM SELECT (P)'
         ],
-        BUSINESS: [
-            'FIRST CLASS (F)',
-            'DELTA ONE (D)',
-            'BUSINESS (J)'
+        PREMIUM_ECONOMY: [
+            'PREMIUM SELECT (P)',  // International flights
+        ],
+        BUSINESS_FIRST: [
+            'FIRST CLASS (F)',     // Domestic flights
+            'DELTA ONE (D)',       // International flights
         ]
     },
     UNITED: {
-        ECONOMY: [
+        BASIC_ECONOMY: [
             'BASIC ECONOMY (N)',
+        ],
+        MAIN_CABIN: [
             'ECONOMY (K)',
-            'UNITED ECONOMY (U)',
-            'FLEXIBLE ECONOMY (Y)'
+            'ECONOMY (M)',
+            'ECONOMY (U)',
         ],
-        PREMIUM: [
+        ECONOMY_PLUS: [
             'ECONOMY PLUS (W)',
-            'PREMIUM PLUS (P)'
         ],
-        BUSINESS: [
-            'UNITED FIRST (F)',
-            'UNITED POLARIS (J)',
-            'BUSINESS (C)'
+        PREMIUM_ECONOMY: [
+            'PREMIUM PLUS (P)',    // International flights
+        ],
+        BUSINESS_FIRST: [
+            'FIRST CLASS (F)',     // Domestic flights
+            'POLARIS (J)',         // International flights
+        ]
+    },
+    AMERICAN: {
+        BASIC_ECONOMY: [
+            'BASIC ECONOMY (B)',
+        ],
+        MAIN_CABIN: [
+            'MAIN CABIN (M)',
+            'MAIN CABIN (H)',
+            'MAIN CABIN (K)',
+        ],
+        ECONOMY_PLUS: [
+            'MAIN CABIN EXTRA (W)',
+        ],
+        PREMIUM_ECONOMY: [
+            'PREMIUM ECONOMY (P)', // International flights
+        ],
+        BUSINESS_FIRST: [
+            'FIRST CLASS (F)',     // Domestic flights
+            'BUSINESS (J)',        // International flights
+            'FLAGSHIP FIRST (F)',  // Premium international routes
         ]
     },
     JETBLUE: {
-        ECONOMY: [
+        BASIC_ECONOMY: [
             'BLUE BASIC (B)',
+        ],
+        MAIN_CABIN: [
             'BLUE (M)',
-            'BLUE EXTRA (K)',
-            'FLEXIBLE (Y)'
         ],
-        PREMIUM: [
-            'EVEN MORE SPACE (W)'
+        ECONOMY_PLUS: [
+            'EVEN MORE SPACE (W)',
         ],
-        BUSINESS: [
+        PREMIUM_ECONOMY: [],       // JetBlue doesn't offer Premium Economy
+        BUSINESS_FIRST: [
             'MINT (J)',
-            'MINT STUDIO (C)'
-        ]
-    },
-    SOUTHWEST: {
-        ECONOMY: [
-            'WANNA GET AWAY (N)',
-            'WANNA GET AWAY PLUS (K)',
-            'ANYTIME (Y)'
-        ],
-        PREMIUM: [],  // Southwest doesn't have premium economy
-        BUSINESS: [
-            'BUSINESS SELECT (J)'
+            'MINT STUDIO (C)',     // Enhanced Mint experience
         ]
     }
 };
@@ -122,24 +139,52 @@ const generateReferenceNumber = (airline) => {
 
 const generateBookingClass = (airline, flightType) => {
     const airlineClasses = AIRLINE_CLASSES[airline];
-    let classTypes;
+    let classPool;
     const rand = Math.random();
-    
+
     if (flightType === 'LONG') {
-        if (rand < 0.4) classTypes = airlineClasses.BUSINESS;
-        else if (rand < 0.7 && airlineClasses.PREMIUM.length > 0) classTypes = airlineClasses.PREMIUM;
-        else classTypes = airlineClasses.ECONOMY;
+        // Long flights have higher chances of premium cabins
+        if (rand < 0.15) {
+            classPool = airlineClasses.BUSINESS_FIRST;
+        } else if (rand < 0.30 && airlineClasses.PREMIUM_ECONOMY.length > 0) {
+            classPool = airlineClasses.PREMIUM_ECONOMY;
+        } else if (rand < 0.50) {
+            classPool = airlineClasses.ECONOMY_PLUS;
+        } else if (rand < 0.80) {
+            classPool = airlineClasses.MAIN_CABIN;
+        } else {
+            classPool = airlineClasses.BASIC_ECONOMY;
+        }
     } else if (flightType === 'MEDIUM') {
-        if (rand < 0.3) classTypes = airlineClasses.BUSINESS;
-        else if (rand < 0.6 && airlineClasses.PREMIUM.length > 0) classTypes = airlineClasses.PREMIUM;
-        else classTypes = airlineClasses.ECONOMY;
+        // Medium flights have moderate chances of premium cabins
+        if (rand < 0.10) {
+            classPool = airlineClasses.BUSINESS_FIRST;
+        } else if (rand < 0.30) {
+            classPool = airlineClasses.ECONOMY_PLUS;
+        } else if (rand < 0.70) {
+            classPool = airlineClasses.MAIN_CABIN;
+        } else {
+            classPool = airlineClasses.BASIC_ECONOMY;
+        }
     } else {
-        if (rand < 0.2) classTypes = airlineClasses.BUSINESS;
-        else if (rand < 0.4 && airlineClasses.PREMIUM.length > 0) classTypes = airlineClasses.PREMIUM;
-        else classTypes = airlineClasses.ECONOMY;
+        // Short flights mostly economy with some first class
+        if (rand < 0.05) {
+            classPool = airlineClasses.BUSINESS_FIRST;
+        } else if (rand < 0.20) {
+            classPool = airlineClasses.ECONOMY_PLUS;
+        } else if (rand < 0.70) {
+            classPool = airlineClasses.MAIN_CABIN;
+        } else {
+            classPool = airlineClasses.BASIC_ECONOMY;
+        }
     }
 
-    return classTypes[Math.floor(Math.random() * classTypes.length)];
+    // If selected class pool is empty (like JetBlue Premium Economy), fall back to Main Cabin
+    if (classPool.length === 0) {
+        classPool = airlineClasses.MAIN_CABIN;
+    }
+
+    return classPool[Math.floor(Math.random() * classPool.length)];
 };
 
 const generateAmount = (flightType, bookingClass) => {
@@ -150,10 +195,19 @@ const generateAmount = (flightType, bookingClass) => {
     };
 
     let multiplier = 1;
-    if (bookingClass.includes('PREMIUM') || bookingClass.includes('PLUS') || bookingClass.includes('COMFORT') || bookingClass.includes('SPACE')) {
+    // Adjust price based on cabin class
+    if (bookingClass.includes('BASIC')) {
+        multiplier = 0.8;
+    } else if (bookingClass.includes('COMFORT+') || bookingClass.includes('ECONOMY PLUS') || 
+               bookingClass.includes('MAIN CABIN EXTRA') || bookingClass.includes('EVEN MORE SPACE')) {
+        multiplier = 1.3;
+    } else if (bookingClass.includes('PREMIUM')) {
         multiplier = 1.8;
-    } else if (bookingClass.includes('BUSINESS') || bookingClass.includes('FIRST') || bookingClass.includes('ONE') || bookingClass.includes('MINT') || bookingClass.includes('POLARIS')) {
+    } else if (bookingClass.includes('FIRST') || bookingClass.includes('ONE') || 
+               bookingClass.includes('POLARIS') || bookingClass.includes('MINT')) {
         multiplier = 2.5;
+    } else if (bookingClass.includes('FLAGSHIP')) {
+        multiplier = 3.0;
     }
 
     const range = baseAmounts[flightType];
