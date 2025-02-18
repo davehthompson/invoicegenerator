@@ -5,6 +5,7 @@ import { useTravelExpenseForm } from '../hooks/useTravelExpenseForm';
 import DatePicker from 'react-datepicker';
 import { AIRLINES } from '../utils/airlineConfig';
 import "react-datepicker/dist/react-datepicker.css";
+import { generatePDF } from '../utils/pdfGenerator';
 
 const TravelExpenseContent = () => {
     const { setActions } = useTopBar();
@@ -18,12 +19,27 @@ const TravelExpenseContent = () => {
         loadDemoData
     } = useTravelExpenseForm();
 
-    // Memoize the loadDemoData callback
+    const handleGeneratePDF = useCallback(async () => {
+        try {
+            console.log('Starting PDF generation process...');
+            if (!formData) {
+                console.error('No form data available');
+                return;
+            }
+            
+            const success = await generatePDF('preview-content', formData);
+            if (success) {
+                console.log('PDF generated successfully');
+            }
+        } catch (error) {
+            console.error('Failed to generate PDF:', error);
+        }
+    }, [formData]);
+
     const handleLoadDemoData = useCallback(() => {
         loadDemoData();
     }, [loadDemoData]);
 
-    // Create actions element only once
     const actionButtons = useMemo(() => (
         <div className="flex gap-2">
             <button
@@ -34,12 +50,12 @@ const TravelExpenseContent = () => {
             </button>
             <button
                 className="flex items-center gap-2 px-4 py-2 bg-[#E4F222] border border-[#E4F222] text-gray-800 hover:bg-[#cdd71f] hover:border-[#cdd71f] focus:outline-none focus:ring-2 focus:ring-[#E4F222] focus:ring-opacity-50 transition-colors"
-                onClick={() => console.log('Generate PDF')}
+                onClick={handleGeneratePDF}
             >
                 Generate PDF
             </button>
         </div>
-    ), []); // Empty dependency array since buttons don't depend on changing values
+    ), [handleLoadDemoData, handleGeneratePDF]);
 
     useEffect(() => {
         setActions(actionButtons);

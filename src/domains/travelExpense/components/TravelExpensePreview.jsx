@@ -16,7 +16,7 @@ const TravelExpensePreview = ({ formData, expenseType }) => {
     };
 
     const renderAirlinePreview = () => (
-        <div className="max-w-2xl mx-auto bg-white text-gray-800 rounded-lg overflow-hidden">
+        <div id="preview-content" className="max-w-2xl mx-auto bg-white text-gray-800 rounded-lg overflow-hidden">
             {/* Header with Airline Logo */}
             <div style={{ backgroundColor: airlineConfig.bgColor }} className="p-6">
                 <div className="flex justify-between items-center">
