@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useCallback } from 'react';
 import { useTopBar } from '../../shared/context/TopBarContext';
 import TravelExpensePreview from './TravelExpensePreview';
 import { useTravelExpenseForm } from '../hooks/useTravelExpenseForm';
@@ -18,11 +18,17 @@ const TravelExpenseContent = () => {
         loadDemoData
     } = useTravelExpenseForm();
 
+    // Memoize the loadDemoData callback
+    const handleLoadDemoData = useCallback(() => {
+        loadDemoData();
+    }, [loadDemoData]);
+
+    // Create actions element only once
     const actionButtons = useMemo(() => (
         <div className="flex gap-2">
             <button
                 className="flex items-center gap-2 px-4 py-2 bg-[#E4F222] border border-[#E4F222] text-gray-800 hover:bg-[#cdd71f] hover:border-[#cdd71f] focus:outline-none focus:ring-2 focus:ring-[#E4F222] focus:ring-opacity-50 transition-colors"
-                onClick={loadDemoData}
+                onClick={handleLoadDemoData}
             >
                 Load Demo Data
             </button>
@@ -33,9 +39,9 @@ const TravelExpenseContent = () => {
                 Generate PDF
             </button>
         </div>
-    ), [loadDemoData]);
+    ), []); // Empty dependency array since buttons don't depend on changing values
 
-    React.useEffect(() => {
+    useEffect(() => {
         setActions(actionButtons);
         return () => setActions(null);
     }, [setActions, actionButtons]);
