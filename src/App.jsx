@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import Layout from './domains/shared/components/Layout';
 import InvoiceContent from './domains/invoice/components/InvoiceContent';
 import POGeneration from './domains/purchaseOrder/components/POGeneration';
+import TravelExpenseContent from './domains/travelExpense/components/TravelExpenseContent';
 import { TopBarProvider } from './domains/shared/context/TopBarContext';
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
           <Routes>
             <Route path="/invoice-generator" element={<InvoiceContent />} />
             <Route path="/po-generation" element={<POGeneration />} />
+            <Route path="/travel-expense" element={<TravelExpenseContent />} />
             <Route path="/" element={<Navigate to="/invoice-generator" replace />} />
           </Routes>
         </Layout>

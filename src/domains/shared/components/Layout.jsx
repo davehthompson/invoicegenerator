@@ -6,6 +6,7 @@ import {
   X,
   FileText, 
   ClipboardList,
+  Plane
 } from 'lucide-react';
 import { useTopBar } from '../context/TopBarContext';
 
@@ -13,20 +14,26 @@ const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { actions } = useTopBar()
+  const { actions } = useTopBar();
 
   const navigationItems = [
     { id: 'invoice-generator', label: 'Invoice Generator', icon: FileText, path: '/invoice-generator' },
     { id: 'po-generation', label: 'PO Generator', icon: ClipboardList, path: '/po-generation' },
+    { id: 'travel-expense', label: 'Travel Expense', icon: Plane, path: '/travel-expense' },
   ];
 
   const handleNavigate = (path) => {
     console.log('Navigating to:', path);
-    navigate(path);
-    if (window.innerWidth < 768) {
-      setIsSidebarOpen(false);
-    }
+    setIsSidebarOpen(false); // Close sidebar first
+    setTimeout(() => {       // Add slight delay before navigation
+      navigate(path);
+    }, 0);
   };
+
+  // Debug current location
+  useEffect(() => {
+    console.log('Current location:', location.pathname);
+  }, [location]);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -34,7 +41,7 @@ const Layout = ({ children }) => {
       <div 
         className={`fixed inset-y-0 left-0 z-30 transform ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } transition-transform duration-300 ease-in-out`}
+        } md:translate-x-0 transition-transform duration-300 ease-in-out`}
       >
         <div className="flex h-full">
           <div className="flex flex-col w-64 bg-white border-r">
@@ -42,7 +49,7 @@ const Layout = ({ children }) => {
               <h2 className="text-xl font-semibold text-gray-800">Ramp Solutions Tools</h2>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="p-1 text-gray-500 hover:text-gray-700"
+                className="p-1 text-gray-500 hover:text-gray-700 md:hidden"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -50,12 +57,13 @@ const Layout = ({ children }) => {
             <nav className="flex-1 px-4 pt-4 space-y-2">
               {navigationItems.map((item) => {
                 const Icon = item.icon;
+                const isActive = location.pathname === item.path;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavigate(item.path)}
                     className={`flex items-center w-full px-4 py-2 text-sm rounded-lg ${
-                      location.pathname === item.path
+                      isActive
                         ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-700 hover:bg-gray-50'
                     }`}
@@ -71,18 +79,16 @@ const Layout = ({ children }) => {
       </div>
 
       {/* Main Content */}
-      <div className={`flex-1 ${isSidebarOpen ? 'ml-64' : 'ml-0'} transition-margin duration-300`}>
+      <div className="flex-1 md:ml-64">
         {/* Top Bar */}
         <div className="sticky top-0 z-40 flex items-center justify-between h-16 bg-white border-b px-4">
           <div className="flex items-center">
-            {!isSidebarOpen && (
-              <button
-                onClick={() => setIsSidebarOpen(true)}
-                className="p-1 mr-4 text-gray-500 hover:text-gray-700"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
-            )}
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-1 mr-4 text-gray-500 hover:text-gray-700 md:hidden"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
           </div>
           {/* Action buttons container */}
           <div className="flex items-center gap-4">
