@@ -7,6 +7,7 @@ import InvoiceContent from './domains/invoice/components/InvoiceContent';
 import POGeneration from './domains/purchaseOrder/components/POGeneration';
 import TravelExpenseContent from './domains/travelExpense/components/TravelExpenseContent';
 import { TopBarProvider } from './domains/shared/context/TopBarContext';
+import loadingLogo from './assets/company-logos/ramp-logo.png';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,23 +23,12 @@ function App() {
   if (isLoading) {
     return (
       <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
-        <div className="text-center">
-          <div className="animate-pulse mb-4">
-            <svg
-              className="w-24 h-24 text-blue-500"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <h2 className="text-xl font-semibold text-gray-700 animate-pulse">
-            Loading Invoice Generator...
-          </h2>
+        <div className="animate-pulse">
+          <img 
+            src={loadingLogo} 
+            alt="Ramp"
+            className="w-[68px] h-[68px] mx-auto"
+          />
         </div>
       </div>
     );

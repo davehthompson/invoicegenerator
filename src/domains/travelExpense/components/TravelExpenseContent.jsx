@@ -36,209 +36,197 @@ const TravelExpenseContent = () => {
         }
     }, [formData]);
 
-    const handleLoadDemoData = useCallback(() => {
-        loadDemoData();
-    }, [loadDemoData]);
+    const demoButton = (
+        <button
+            key="demo"
+            className="flex items-center gap-2 px-4 py-2 bg-[#E4F222] text-gray-800 font-medium hover:bg-[#cdd71f] transition-colors rounded-none"
+            onClick={loadDemoData}
+        >
+            Load Demo Data
+        </button>
+    );
+
+    const pdfButton = (
+        <button
+            key="pdf"
+            className="flex items-center gap-2 px-4 py-2 bg-[#E4F222] text-gray-800 font-medium hover:bg-[#cdd71f] transition-colors rounded-none"
+            onClick={handleGeneratePDF}
+        >
+            Generate PDF
+        </button>
+    );
 
     const actionButtons = useMemo(() => (
         <div className="flex gap-2">
-            <button
-                className="flex items-center gap-2 px-4 py-2 bg-[#E4F222] border border-[#E4F222] text-gray-800 hover:bg-[#cdd71f] hover:border-[#cdd71f] focus:outline-none focus:ring-2 focus:ring-[#E4F222] focus:ring-opacity-50 transition-colors"
-                onClick={handleLoadDemoData}
-            >
-                Load Demo Data
-            </button>
-            <button
-                className="flex items-center gap-2 px-4 py-2 bg-[#E4F222] border border-[#E4F222] text-gray-800 hover:bg-[#cdd71f] hover:border-[#cdd71f] focus:outline-none focus:ring-2 focus:ring-[#E4F222] focus:ring-opacity-50 transition-colors"
-                onClick={handleGeneratePDF}
-            >
-                Generate PDF
-            </button>
+            {demoButton}
+            {pdfButton}
         </div>
-    ), [handleLoadDemoData, handleGeneratePDF]);
+    ), []);
 
     useEffect(() => {
         setActions(actionButtons);
         return () => setActions(null);
     }, [setActions, actionButtons]);
 
+    const inputClass = "block w-full rounded-md border-0 px-3.5 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6";
+    const labelClass = "block text-sm font-semibold leading-6 text-gray-900 mb-2";
+
     return (
-        <div className="flex h-[calc(100vh-4rem)]">
-            {/* Form Section */}
-            <div className="w-1/2 p-8 overflow-auto">
-                <div className="space-y-6">
-                    <h1 className="text-2xl font-bold text-gray-900">Travel Expense Generator</h1>
-                    
-                    <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
-                        <div className="px-4 py-6 sm:p-8">
-                            <div className="grid grid-cols-1 gap-x-6 gap-y-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 className="text-2xl font-bold text-gray-900 mb-8">Travel Expense Generator</h1>
+            
+            <div className="flex h-full gap-16">
+                <div className="w-1/2">
+                    <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:p-8">
+                        <div className="space-y-8">
+                            <div className="grid grid-cols-1 gap-x-8 gap-y-6">
                                 <div className="col-span-full">
-                                    <label htmlFor="type" className="block text-sm font-medium leading-6 text-gray-900">
+                                    <label htmlFor="type" className={labelClass}>
                                         Expense Type
                                     </label>
-                                    <div className="mt-2">
-                                        <select
-                                            id="type"
-                                            name="type"
-                                            value={expenseType}
-                                            onChange={(e) => handleExpenseTypeChange(e.target.value)}
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                        >
-                                            <option value="HOTEL">Hotel Folio</option>
-                                            <option value="AIRLINE">Airline Reservation</option>
-                                        </select>
-                                    </div>
+                                    <select
+                                        id="type"
+                                        name="type"
+                                        value={expenseType}
+                                        onChange={(e) => handleExpenseTypeChange(e.target.value)}
+                                        className={inputClass}
+                                    >
+                                        <option value="HOTEL">Hotel Folio</option>
+                                        <option value="AIRLINE">Airline Reservation</option>
+                                    </select>
                                 </div>
 
                                 {expenseType === 'AIRLINE' && (
                                     <>
                                         <div className="col-span-full">
-                                            <label htmlFor="airline" className="block text-sm font-medium leading-6 text-gray-900">
+                                            <label htmlFor="airline" className={labelClass}>
                                                 Select Airline
                                             </label>
-                                            <div className="mt-2">
-                                                <select
-                                                    id="airline"
-                                                    name="airline"
-                                                    value={formData.airline}
-                                                    onChange={(e) => handleAirlineChange(e.target.value)}
-                                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                                >
-                                                    {Object.entries(AIRLINES).map(([key, value]) => (
-                                                        <option key={key} value={key}>
-                                                            {value.name}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
+                                            <select
+                                                id="airline"
+                                                name="airline"
+                                                value={formData.airline}
+                                                onChange={(e) => handleAirlineChange(e.target.value)}
+                                                className={inputClass}
+                                            >
+                                                {Object.entries(AIRLINES).map(([key, value]) => (
+                                                    <option key={key} value={key}>
+                                                        {value.name}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
 
                                         <div className="col-span-full">
-                                            <label htmlFor="referenceNumber" className="block text-sm font-medium leading-6 text-gray-900">
+                                            <label htmlFor="referenceNumber" className={labelClass}>
                                                 Reference Number
                                             </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    type="text"
-                                                    name="referenceNumber"
-                                                    id="referenceNumber"
-                                                    value={formData.referenceNumber}
-                                                    onChange={handleInputChange}
-                                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
+                                            <input
+                                                type="text"
+                                                name="referenceNumber"
+                                                id="referenceNumber"
+                                                value={formData.referenceNumber}
+                                                onChange={handleInputChange}
+                                                className={inputClass}
+                                            />
                                         </div>
 
                                         <div className="col-span-full">
-                                            <label htmlFor="flightNumber" className="block text-sm font-medium leading-6 text-gray-900">
+                                            <label htmlFor="flightNumber" className={labelClass}>
                                                 Flight Number
                                             </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    type="text"
-                                                    name="flightNumber"
-                                                    id="flightNumber"
-                                                    value={formData.flightNumber}
-                                                    onChange={handleInputChange}
-                                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
+                                            <input
+                                                type="text"
+                                                name="flightNumber"
+                                                id="flightNumber"
+                                                value={formData.flightNumber}
+                                                onChange={handleInputChange}
+                                                className={inputClass}
+                                            />
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label htmlFor="origin" className="block text-sm font-medium leading-6 text-gray-900">
+                                                <label htmlFor="origin" className={labelClass}>
                                                     Origin
                                                 </label>
-                                                <div className="mt-2">
-                                                    <input
-                                                        type="text"
-                                                        name="origin"
-                                                        id="origin"
-                                                        value={formData.origin}
-                                                        onChange={handleInputChange}
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
+                                                <input
+                                                    type="text"
+                                                    name="origin"
+                                                    id="origin"
+                                                    value={formData.origin}
+                                                    onChange={handleInputChange}
+                                                    className={inputClass}
+                                                />
                                             </div>
                                             <div>
-                                                <label htmlFor="destination" className="block text-sm font-medium leading-6 text-gray-900">
+                                                <label htmlFor="destination" className={labelClass}>
                                                     Destination
                                                 </label>
-                                                <div className="mt-2">
-                                                    <input
-                                                        type="text"
-                                                        name="destination"
-                                                        id="destination"
-                                                        value={formData.destination}
-                                                        onChange={handleInputChange}
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
+                                                <input
+                                                    type="text"
+                                                    name="destination"
+                                                    id="destination"
+                                                    value={formData.destination}
+                                                    onChange={handleInputChange}
+                                                    className={inputClass}
+                                                />
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label htmlFor="departureDate" className="block text-sm font-medium leading-6 text-gray-900">
+                                                <label htmlFor="departureDate" className={labelClass}>
                                                     Departure Date & Time
                                                 </label>
-                                                <div className="mt-2">
-                                                    <DatePicker
-                                                        selected={formData.departureDate}
-                                                        onChange={(date) => handleDateChange(date, 'departureDate')}
-                                                        showTimeSelect
-                                                        dateFormat="MMM d, yyyy h:mm aa"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
+                                                <DatePicker
+                                                    selected={formData.departureDate}
+                                                    onChange={(date) => handleDateChange(date, 'departureDate')}
+                                                    showTimeSelect
+                                                    dateFormat="MMM d, yyyy h:mm aa"
+                                                    className={inputClass}
+                                                />
                                             </div>
                                             <div>
-                                                <label htmlFor="arrivalDate" className="block text-sm font-medium leading-6 text-gray-900">
+                                                <label htmlFor="arrivalDate" className={labelClass}>
                                                     Arrival Date & Time
                                                 </label>
-                                                <div className="mt-2">
-                                                    <DatePicker
-                                                        selected={formData.arrivalDate}
-                                                        onChange={(date) => handleDateChange(date, 'arrivalDate')}
-                                                        showTimeSelect
-                                                        dateFormat="MMM d, yyyy h:mm aa"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
+                                                <DatePicker
+                                                    selected={formData.arrivalDate}
+                                                    onChange={(date) => handleDateChange(date, 'arrivalDate')}
+                                                    showTimeSelect
+                                                    dateFormat="MMM d, yyyy h:mm aa"
+                                                    className={inputClass}
+                                                />
                                             </div>
                                         </div>
 
                                         <div className="col-span-full">
-                                            <label htmlFor="bookingClass" className="block text-sm font-medium leading-6 text-gray-900">
+                                            <label htmlFor="bookingClass" className={labelClass}>
                                                 Booking Class
                                             </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    type="text"
-                                                    name="bookingClass"
-                                                    id="bookingClass"
-                                                    value={formData.bookingClass}
-                                                    onChange={handleInputChange}
-                                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
+                                            <input
+                                                type="text"
+                                                name="bookingClass"
+                                                id="bookingClass"
+                                                value={formData.bookingClass}
+                                                onChange={handleInputChange}
+                                                className={inputClass}
+                                            />
                                         </div>
 
                                         <div className="col-span-full">
-                                            <label htmlFor="totalAmount" className="block text-sm font-medium leading-6 text-gray-900">
+                                            <label htmlFor="totalAmount" className={labelClass}>
                                                 Total Amount (USD)
                                             </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    type="text"
-                                                    name="totalAmount"
-                                                    id="totalAmount"
-                                                    value={formData.totalAmount}
-                                                    onChange={handleInputChange}
-                                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#E4F222] sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
+                                            <input
+                                                type="text"
+                                                name="totalAmount"
+                                                id="totalAmount"
+                                                value={formData.totalAmount}
+                                                onChange={handleInputChange}
+                                                className={inputClass}
+                                            />
                                         </div>
                                     </>
                                 )}
@@ -246,15 +234,14 @@ const TravelExpenseContent = () => {
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Preview Section */}
-            <div className="w-1/2 bg-gray-50 p-8 overflow-auto border-l border-gray-200">
-                <div className="sticky top-0">
-                    <TravelExpensePreview 
-                        formData={formData}
-                        expenseType={expenseType}
-                    />
+                <div className="w-1/2">
+                    <div className="sticky top-[104px]">
+                        <TravelExpensePreview 
+                            formData={formData}
+                            expenseType={expenseType}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

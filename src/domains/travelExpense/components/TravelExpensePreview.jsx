@@ -1,5 +1,5 @@
 import React from 'react';
-import { format } from 'date-fns';
+import { format, differenceInMinutes } from 'date-fns';
 import { AIRLINES } from '../utils/airlineConfig';
 
 const TravelExpensePreview = ({ formData, expenseType }) => {
@@ -13,6 +13,20 @@ const TravelExpensePreview = ({ formData, expenseType }) => {
 
     const formatTime = (date) => {
         return date ? format(new Date(date), 'h:mm a').toLowerCase() : '';
+    };
+
+    const calculateFlightDuration = () => {
+        if (!formData.departureDate || !formData.arrivalDate) return '';
+        
+        const diffInMinutes = differenceInMinutes(
+            new Date(formData.arrivalDate),
+            new Date(formData.departureDate)
+        );
+        
+        const hours = Math.floor(diffInMinutes / 60);
+        const minutes = diffInMinutes % 60;
+        
+        return `${hours}h ${minutes}m`;
     };
 
     const renderAirlinePreview = () => (
@@ -54,7 +68,7 @@ const TravelExpensePreview = ({ formData, expenseType }) => {
                     </div>
 
                     {/* Flight Route */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-2">
                         <div className="text-center flex-1">
                             <div className="text-2xl font-bold">{formData.origin}</div>
                             <div className="text-sm text-gray-600">{formatTime(formData.departureDate)}</div>
@@ -62,12 +76,16 @@ const TravelExpensePreview = ({ formData, expenseType }) => {
                         </div>
                         
                         <div className="flex-1 px-4">
-                            <div className="relative">
-                                <div className="border-t-2 border-gray-300 w-full absolute top-1/2"></div>
-                                <div className="flex justify-center">
-                                    <svg className="w-6 h-6 text-gray-400 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                    </svg>
+                            <div className="relative flex flex-col items-center">
+                                <div className="text-sm text-gray-500 mb-2">
+                                    {calculateFlightDuration()}
+                                </div>
+                                <div className="flex items-center w-full">
+                                    <div className="h-[1px] bg-gray-400 flex-grow"></div>
+                                    <div 
+                                        className="w-2 h-2 border-t border-r border-gray-400 transform rotate-45 -ml-[1px]"
+                                        style={{ marginTop: '-1px' }}
+                                    ></div>
                                 </div>
                             </div>
                         </div>
@@ -114,6 +132,9 @@ const TravelExpensePreview = ({ formData, expenseType }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Bottom Border */}
+            <div style={{ backgroundColor: airlineConfig.bgColor }} className="h-6"></div>
         </div>
     );
 
@@ -124,7 +145,7 @@ const TravelExpensePreview = ({ formData, expenseType }) => {
     );
 
     return (
-        <div className="shadow-lg">
+        <div className="shadow-lg rounded-lg overflow-hidden">
             {expenseType === 'AIRLINE' ? renderAirlinePreview() : renderHotelPreview()}
         </div>
     );
